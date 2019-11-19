@@ -45,7 +45,7 @@ pandas==0.20.3
 pandocfilters==1.4.2
 pexpect==4.0.1
 pickleshare==0.7.4
-Pillow==5.4.0
+Pillow==6.2.0
 plotly==2.7.0
 pockets==0.5.1
 prompt-toolkit==1.0.15
