@@ -16,6 +16,7 @@ parser.add_argument('-j', '--workers', default=4, type=int, help='number of data
 parser.add_argument('-p', '--patch-size', default=28, type=int, help='patch size for crops (default: 28)')
 parser.add_argument('--dropout', default=0.0, type=float, help='Dropout probability. '
                                                                'If 0.0 no dropout is applied (default)')
+parser.add_argument('-wd', '--weight-decay', default=0.0, type=float, help='Weight decay value (default 0.0)')
 
 # Architecture and weight-init
 parser.add_argument('-a', '--architecture', default='WRN', help='model architecture (default: WRN)')
@@ -53,7 +54,8 @@ parser.add_argument('--resume', default='', type=str, help='path to model to loa
                                                            'Also for stand-alone openset outlier evaluation script')
 
 # Open set standalone script
-parser.add_argument('--openset-datasets', default='CIFAR10,KMNIST', help='name of openset datasets')
+parser.add_argument('--openset-datasets', default='FashionMNIST,AudioMNIST,KMNIST,CIFAR10,CIFAR100,SVHN',
+                    help='name of openset datasets')
 
 # Open set arguments
 parser.add_argument('--distance-function', default='cosine', help='Openset distance function (default: cosine) '

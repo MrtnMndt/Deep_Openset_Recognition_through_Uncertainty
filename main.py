@@ -7,7 +7,7 @@ import random
 from time import gmtime, strftime
 
 # Tensorboard for PyTorch logging and visualization
-from tensorboardX import SummaryWriter
+from torch.utils.tensorboard import SummaryWriter
 
 # Torch libraries
 import torch
@@ -111,7 +111,7 @@ def main():
     WeightInitializer.init_model(model)
 
     # Define optimizer and loss function (criterion)
-    optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate)
+    optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate, weight_decay=args.weight_decay)
 
     epoch = 0
     best_prec = 0

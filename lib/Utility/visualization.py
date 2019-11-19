@@ -2,11 +2,8 @@ import torch
 import os
 import seaborn as sns
 import numpy as np
-import tensorflow as tf
 import matplotlib
 import matplotlib.pyplot as plt
-from matplotlib.colors import ListedColormap
-from packaging import version
 
 # matplotlib backend, required for plotting of images to tensorboard
 matplotlib.use('Agg')
@@ -22,18 +19,14 @@ sns.set(font_scale=2.5)
 sns.set_style("whitegrid")
 colors = sns.color_palette("Set2")
 pal = sns.cubehelix_palette(10, light=0.0)
-linestyles = [
-     (0, (1, 3)),  # 'dotted'
-     (0, (1, 1)),  # 'densely dotted'
-
-     (0, (2, 2)),  # 'dashed'
-     (0, (3, 1)),  # 'densely dashed'
-
-     (0, (3, 3, 1, 3)),  # 'dashdotted'
-     (0, (3, 1, 1, 1)),  # 'densely dashdotted'
-
-     (0, (3, 3, 1, 3, 1, 3)),  # 'dashdotdotted'
-     (0, (3, 1, 1, 1, 1, 1))]  # 'densely dashdotdotted'
+linestyles = [(0, (1, 3)),  # 'dotted'
+              (0, (1, 1)),  # 'densely dotted'
+              (0, (2, 2)),  # 'dashed'
+              (0, (3, 1)),  # 'densely dashed'
+              (0, (3, 3, 1, 3)),  # 'dashdotted'
+              (0, (3, 1, 1, 1)),  # 'densely dashdotted'
+              (0, (3, 3, 1, 3, 1, 3)),  # 'dashdotdotted'
+              (0, (3, 1, 1, 1, 1, 1))]  # 'densely dashdotdotted'
 
 
 def args_to_tensorboard(writer, args):
@@ -51,38 +44,6 @@ def args_to_tensorboard(writer, args):
         txt += arg + ": " + str(getattr(args, arg)) + "<br/>"
 
     writer.add_text('command_line_parameters', txt, 0)
-
-
-def plot_to_tensorboard(writer, fig, step, name):
-    """
-    Takes a matplotlib figure handle and converts it using
-    canvas and string-casts to a numpy array that can be
-    visualized in TensorBoard using the add_image function.
-
-    See http://martin-mundt.com/tensorboard-figures/ for a corresponding blog post about plotting to TensorBoard.
-
-    Parameters:
-        writer (tensorboard.SummaryWriter): TensorBoard SummaryWriter instance.
-        fig (matplotlib.pyplot.fig): Matplotlib figure handle.
-        step (int): counter usually specifying steps/epochs/time.
-        name (str): name of the figure in tensorboard.
-    """
-
-    # Draw figure on canvas
-    fig.canvas.draw()
-
-    # Convert the figure to numpy array, read the pixel values and reshape the array
-    img = np.fromstring(fig.canvas.tostring_rgb(), dtype=np.uint8, sep='')
-    img = img.reshape(fig.canvas.get_width_height()[::-1] + (3,))
-
-    # Normalize into 0-1 range for TensorBoard(X). Swap axes for newer versions where API expects colors in first dim
-    img = img / 255.0
-
-    if version.parse(tf.VERSION) >= version.parse("1.8.0"):
-        img = np.swapaxes(img, 0, 2)
-
-    # Add figure in numpy "image" to TensorBoard writer
-    writer.add_image(name, img, step)
 
 
 def visualize_means(means, num_classes, data_name, save_path, name):
@@ -107,8 +68,8 @@ def visualize_means(means, num_classes, data_name, save_path, name):
     plt.savefig(os.path.join(save_path, name + '_mean_activations.png'), bbox_inches='tight')
 
 
-def visualize_classification_uncertainty(data_mus, data_sigmas, other_data_dicts, other_data_mu_key, other_data_sigma_key,
-                                         data_name, num_samples, save_path):
+def visualize_classification_uncertainty(data_mus, data_sigmas, other_data_dicts, other_data_mu_key,
+                                         other_data_sigma_key, data_name, num_samples, save_path):
     """
     Visualization of prediction uncertainty computed over multiple samples for each input.
 
@@ -129,13 +90,13 @@ def visualize_classification_uncertainty(data_mus, data_sigmas, other_data_dicts
     plt.figure(figsize=(20, 14))
     plt.scatter(data_mus, data_sigmas, label=data_name, s=75, c=colors[0], alpha=1.0)
 
-    c=1
+    c = 0
     for other_data_name, other_data_dict in other_data_dicts.items():
         other_data_mus = [y for x in other_data_dict[other_data_mu_key] for y in x]
         other_data_sigmas = [y for x in other_data_dict[other_data_sigma_key] for y in x]
         plt.scatter(other_data_mus, other_data_sigmas, label=other_data_name, s=75, c=colors[c], alpha=0.3,
                     marker='*')
-        c+=1
+        c += 1
 
     plt.xlabel("Prediction mean", fontsize=axes_font_size)
     plt.ylabel("Prediction standard deviation", fontsize=axes_font_size)
@@ -164,7 +125,7 @@ def visualize_classification_scores(data, other_data_dicts, dict_key, data_name,
     plt.figure(figsize=(20, 20))
     plt.hist(data, label=data_name, alpha=1.0, bins=20, color=colors[0])
 
-    c = 1
+    c = 0
     for other_data_name, other_data_dict in other_data_dicts.items():
         other_data = [y for x in other_data_dict[dict_key] for y in x]
         plt.hist(other_data, label=other_data_name, alpha=0.5, bins=20, color=colors[c])
@@ -197,7 +158,7 @@ def visualize_entropy_histogram(data, other_data_dicts, max_entropy, dict_key, d
     plt.figure(figsize=(20, 20))
     plt.hist(data, label=data_name, alpha=1.0, bins=25, color=colors[0])
 
-    c = 1
+    c = 0
     for other_data_name, other_data_dict in other_data_dicts.items():
         other_data = [x for x in other_data_dict[dict_key]]
         plt.hist(other_data, label=other_data_name, alpha=0.5, bins=25, color=colors[c])
@@ -233,13 +194,14 @@ def visualize_weibull_outlier_probabilities(data_outlier_probs, other_data_outli
     plt.figure(figsize=(20, 20))
     plt.hist(data_outlier_probs, label=data_name, weights=data_weights, bins=50, color=colors[0],
              alpha=1.0, edgecolor='white', linewidth=5)
-    c=1
+
+    c = 0
     for other_data_name, other_data_outlier_probs in other_data_outlier_probs_dict.items():
         other_data_outlier_probs = np.concatenate(other_data_outlier_probs, axis=0)
         other_data_weights = np.ones_like(other_data_outlier_probs) / float(len(other_data_outlier_probs))
         plt.hist(other_data_outlier_probs, label=other_data_name, weights=other_data_weights,
              bins=50, color=colors[c], alpha=0.5, edgecolor='white', linewidth=5)
-        c+=1
+        c += 1
 
     plt.title("Outlier probabilities: tailsize " + str(tailsize), fontsize=title_font_size)
     plt.xlabel("Outlier probability according to Weibull CDF", fontsize=axes_font_size)
@@ -274,7 +236,7 @@ def visualize_openset_classification(data, other_data_dicts, dict_key, data_name
     plt.figure(figsize=(20, 20))
     plt.plot(thresholds, data, label=data_name, color=colors[0], linestyle='solid', linewidth=lw)
 
-    c = 1
+    c = 0
     for other_data_name, other_data_dict in other_data_dicts.items():
         plt.plot(thresholds, other_data_dict[dict_key], label=other_data_name, color=colors[c],
                  linestyle=linestyles[c % len(linestyles)], linewidth=lw)
@@ -310,7 +272,7 @@ def visualize_entropy_classification(data, other_data_dicts, dict_key, data_name
     plt.figure(figsize=(20, 20))
     plt.plot(thresholds, data, label=data_name, color=colors[0], linestyle='solid', linewidth=lw)
 
-    c = 1
+    c = 0
     for other_data_name, other_data_dict in other_data_dicts.items():
         plt.plot(thresholds, other_data_dict[dict_key], label=other_data_name, color=colors[c],
                  linestyle=linestyles[c % len(linestyles)], linewidth=lw)

@@ -2,8 +2,6 @@ from collections import OrderedDict
 import torch
 import torch.nn as nn
 
-# TODO: "nn.Upsample is deprecated. Use nn.functional.interpolate instead."
-
 
 def get_feat_size(block, spatial_size, ncolors=3):
     """
