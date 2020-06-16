@@ -2,7 +2,7 @@
 
 This repository contains PyTorch code for our ICCV-W 2019 [paper](http://openaccess.thecvf.com/content_ICCVW_2019/papers/SDL-CV/Mundt_Open_Set_Recognition_Through_Deep_Neural_Network_Uncertainty_Does_Out-of-Distribution_ICCVW_2019_paper.pdf):
 
-> **Martin Mundt, Iliiua Pliushch, Sagnik Majumder and Visvanathan Ramesh:
+> **Martin Mundt, Iuliia Pliushch, Sagnik Majumder and Visvanathan Ramesh:
 > *"Open Set Recognition Through Deep Neural Network Uncertainty: Does Out-of-Distribution Detection Require Generative Classifiers?"*
 > International Conference on Computer Vision (ICCV) 2019, First Workshop for Statistical Deep Learning in Computer Vision**
 
