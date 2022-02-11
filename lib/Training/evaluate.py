@@ -390,7 +390,7 @@ def eval_openset_dataset(model, data_loader, num_classes, device, latent_var_sam
                 enc = model.module.encode(inputs)
                 z = enc.view(enc.size(0), -1)
                 z_samples[k] = z
-                cl = model.module.classifier(enc)
+                cl = model.module.classifier(z)
                 out = torch.nn.functional.softmax(cl, dim=1)
                 out_samples[k] = out
 
